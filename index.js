@@ -1,9 +1,14 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const cookieParaser = require('cookie-parser');
 
 app.use(express.json());
-app.use(cors());
+app.use(cookieParaser());
+app.use(cors({
+    origin: 'http://localhost:8000',
+    credentials: true,
+}));
 
 const db = require('./models');
 
@@ -13,7 +18,7 @@ app.use('/questions', questionRouter);
 const commentRouter = require('./routes/Comments');
 app.use('/comments', commentRouter);
 const usersRouter = require('./routes/Users');
-app.use('/auth', usersRouter);
+app.use('/user', usersRouter);
 
 
 db.sequelize.sync().then(() => {
