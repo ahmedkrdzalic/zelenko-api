@@ -1,2 +1,2 @@
 # server
- API of the StackAndOverflow project
+ API of the MenuApp project

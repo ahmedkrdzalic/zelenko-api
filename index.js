@@ -13,10 +13,6 @@ app.use(cors({
 const db = require('./models');
 
 //Routes
-const questionRouter = require('./routes/Questions');
-app.use('/questions', questionRouter);
-const commentRouter = require('./routes/Comments');
-app.use('/comments', commentRouter);
 const usersRouter = require('./routes/Users');
 app.use('/user', usersRouter);
 
