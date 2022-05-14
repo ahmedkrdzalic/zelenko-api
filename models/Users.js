@@ -1,3 +1,5 @@
+
+
 module.exports = (sequelize, DataTypes) => {
 
     const Users = sequelize.define("Users", {
@@ -5,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
         username: {
             type: DataTypes.STRING,
             allowNull: false,
+            unique: {
+                args: true,
+                msg: 'Username already in use!'
+              },
         },
         password: {
             type: DataTypes.STRING,
@@ -12,7 +18,12 @@ module.exports = (sequelize, DataTypes) => {
         },
 
     })
-    
+
+    Users.associate = (models) => {
+        Users.hasMany(models.Menus, {
+            onDelete: "cascade",
+        });
+    };
     
     return Users;
 }

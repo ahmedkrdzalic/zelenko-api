@@ -5,14 +5,22 @@ const bcrypt = require('bcrypt');
 const {createToken, validateToken} = require('../services/JWT');
 
 
+
 router.post("/registration", async (req, res) => {
     const {username, password} = req.body;
     bcrypt.hash(password, 10).then((hash) => {
-        Users.create({
-            username: username,
-            password: hash,
-        });
-        res.json("SUCCESS!");
+        Users
+            .create({
+                username: username,
+                password: hash,
+            })
+            .then(function (user) {
+                res.send("SUCCESS");
+            })
+            .catch(function (err) {
+                // every other error
+                res.json(err.errors[0].message);
+            });
     });
 });
 
@@ -35,7 +43,7 @@ router.post("/login", async (req, res) => {
                 maxAge: 2592000000,
                 httpOnly: true
             })
-            .json({user: user});
+            .json({user: {username: user.username, id: user.id}});
         }
     });
 });
