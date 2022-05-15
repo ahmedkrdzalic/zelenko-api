@@ -49,9 +49,21 @@ router.post("/login", async (req, res) => {
 });
 
 router.get('/profile', validateToken, async (req, res) => {
-    const userId = req.query.userId;
-    const user = await Users.findOne({ where: {id: userId}});
-    res.json(user);
+    const userId = req.user.id;
+    const user = await Users.findOne({ where: {id: userId}})
+                            .then(function (user) {
+                                res.json({username: user.username, id: user.id});
+                            })
+                            .catch(function (err) {
+                                // every error
+                                res.json(err);
+                            });
+    
+});
+
+router.get('/logout', validateToken, async (req, res) => {
+    const userId = req.user.id;
+    //logout implementation from pedro tech yt channel    
 });
 
 
