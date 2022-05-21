@@ -26,6 +26,26 @@ router.get("/:id", validateToken, async (req, res) => {
     
 });
 
+router.post("/", validateToken, async (req, res) => {
+    const userId = req.user.id;
+    const {title, menuDATA} = req.body;
+
+    const menu = await Menus
+                            .create({
+                                menuDATA: menuDATA,
+                                title: title,
+                                UserId: userId,
+                            })
+                            .then(function (menu) {
+                                res.json({"msg": "SUCCESS", "menu": menu.title} );
+                            })
+                            .catch(function (err) {
+                                // every other error
+                                res.json(err);
+                            });
+    
+});
+
 
 
 module.exports = router;
