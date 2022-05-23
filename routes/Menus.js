@@ -8,7 +8,6 @@ const fs = require('fs')
 
 
 router.get('/', validateToken, async (req, res) => {
-    //const UserId = req.query.UserId; // moze se i ovim uradit al nije sigurno, ovako mora token svakako koristit
     const menus = await Menus.findAll({ where: {UserId: req.user.id}});
     res.json(menus);
 });
@@ -29,6 +28,31 @@ router.get("/:id", validateToken, async (req, res) => {
     
 });
 
+router.delete("/:id", validateToken, async (req, res) => {
+    const id = req.params.id;
+    const userId = req.user.id;
+
+    const menu = await Menus.findByPk(id)
+                                .then(function(menu) {
+                                    if(menu.UserId !== userId) {res.json({error: "Unauthorized access to this menu"})}
+
+                                    Menus.destroy({
+                                            where: { id: id },
+                                        })
+                                        .then(function(res){
+                                            res.json({"msg": "SUCCESS"});
+                                        })
+
+                                })
+                                .catch(function (err) {
+                                    // every error
+                                    res.json(err);
+                                });
+    
+});
+
+
+
 router.post("/", validateToken, async (req, res) => {
     const userId = req.user.id;
     const {title, menuDATA} = req.body;
@@ -40,14 +64,15 @@ router.post("/", validateToken, async (req, res) => {
                                 UserId: userId,
                             })
                             .then(function (menu) {
-                                res.json({"msg": "SUCCESS", "menu": menu.title} );
+                                res.status(200).json({"msg": "SUCCESS", "menu_id": menu.id} );
                             })
                             .catch(function (err) {
                                 // every other error
-                                res.json(err);
+                                res.status(400).json({"err": err.errors[0].message});
                             });
     
 });
+
 
 
 //img storage
