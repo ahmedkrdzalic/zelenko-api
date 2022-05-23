@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const { Menus } = require('../models');
 const { validateToken} = require('../services/JWT');
+const multer = require('multer')
+const path = require('path')
+const fs = require('fs')
 
 
 router.get('/', validateToken, async (req, res) => {
@@ -45,6 +48,46 @@ router.post("/", validateToken, async (req, res) => {
                             });
     
 });
+
+
+//img storage
+var storage = multer.diskStorage({
+    destination: (req, file, callBack) => {
+        callBack(null, './public/images/')     // './public/images/' directory name where save the file
+    },
+    filename: (req, file, callBack) => {
+        callBack(null, Date.now() + path.extname(file.originalname))
+    }
+})
+ 
+var upload = multer({
+    storage: storage
+});
+
+//POST body form data: image -> the image to upload; 
+router.post("/image-upload", validateToken, upload.single('image'), (req, res) => {
+    if (!req.file) {
+        res.json({"msg": "No file upload"});
+    } else {
+        res.json({"img_name": req.file.filename, "msg": "SUCCESS"});
+    }
+});
+
+router.delete("/image-delete/:imagename", (req, res) => {
+    const imgname = req.params.imagename;
+    console.log(imgname + " is the one");
+    console.log(path.join(__dirname, '..', 'public', 'images', imgname));
+
+    try {
+        fs.unlinkSync(path.join(__dirname, '..', 'public', 'images', imgname));
+
+        return res.status(200).send({"msg":'SUCCESS', "img":imgname});
+    } catch (err) {
+        return res.send(err);
+    }
+  });
+
+
 
 
 
