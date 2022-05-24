@@ -39,7 +39,7 @@ router.delete("/:id", validateToken, async (req, res) => {
                                     Menus.destroy({
                                             where: { id: id },
                                         })
-                                        .then(function(res){
+                                        .then(function(delres){
                                             res.json({"msg": "SUCCESS"});
                                         })
 
