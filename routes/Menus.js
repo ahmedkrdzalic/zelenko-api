@@ -67,10 +67,24 @@ router.post("/", validateToken, async (req, res) => {
                                 res.status(200).json({"msg": "SUCCESS", "menu_id": menu.id} );
                             })
                             .catch(function (err) {
-                                // every other error
                                 res.status(400).json({"err": err.errors[0].message});
                             });
     
+});
+
+//UPDATE the whole menu
+router.put("/:id", validateToken, async (req, res) => {
+    const id = req.params.id;
+    const userId = req.user.id;
+    const {title, menuDATA} = req.body;
+
+    const menu = await Menus.update({title:title, menuDATA:menuDATA}, {where: {id:id, UserID:userId}})
+                                .then(function(resDB) {
+                                    res.json({"msg":"SUCCESS"});
+                                })
+                                .catch(function (err) {
+                                    res.json(err);
+                                });
 });
 
 
@@ -100,7 +114,6 @@ router.post("/image-upload", validateToken, upload.single('image'), (req, res) =
 
 router.delete("/image-delete/:imagename", (req, res) => {
     const imgname = req.params.imagename;
-    console.log(imgname + " is the one");
     console.log(path.join(__dirname, '..', 'public', 'images', imgname));
 
     try {
@@ -111,8 +124,6 @@ router.delete("/image-delete/:imagename", (req, res) => {
         return res.send(err);
     }
   });
-
-
 
 
 
