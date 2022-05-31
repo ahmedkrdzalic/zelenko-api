@@ -63,7 +63,13 @@ router.get('/profile', validateToken, async (req, res) => {
 
 router.get('/logout', validateToken, async (req, res) => {
     const userId = req.user.id;
-    //logout implementation from pedro tech yt channel    
+    const token = req.cookies["token"];
+
+    res.cookie("token", token, {
+        maxAge: -1000,
+        httpOnly: true
+    })
+    .json({msg: "logout success"});
 });
 
 

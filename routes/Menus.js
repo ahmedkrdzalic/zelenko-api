@@ -12,6 +12,8 @@ router.get('/', validateToken, async (req, res) => {
     res.json(menus);
 });
 
+
+//GET by menu ID 
 router.get("/:id", validateToken, async (req, res) => {
     const id = req.params.id;
     const userId = req.user.id;
@@ -27,6 +29,30 @@ router.get("/:id", validateToken, async (req, res) => {
                                 });
     
 });
+
+
+
+//GET by menu name - accessible by guest and user
+router.get("/title/:menutitle", async (req, res) => {
+    const menutitle = req.params.menutitle;
+
+    const menu = await Menus.findOne({where: {title: menutitle}})
+                                .then(function(menu) {
+                                    if(menu === null || menu === {}){
+                                        res.status(400).send("Menu Not Found!")
+                                    }
+                                    else {
+                                        res.json(menu);
+                                    }
+                                })
+                                .catch(function (err) {
+                                    // every error
+                                    res.json(err);
+                                });
+});
+
+
+
 
 router.delete("/:id", validateToken, async (req, res) => {
     const id = req.params.id;
