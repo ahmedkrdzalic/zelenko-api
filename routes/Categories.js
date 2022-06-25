@@ -1,18 +1,21 @@
 const express = require('express');
 const router = express.Router();
-const { Menus } = require('../models');
-const { validateToken} = require('../services/JWT');
-const multer = require('multer')
-const path = require('path')
-const fs = require('fs')
+const { Categories } = require('../models');
 
 
-router.get('/', validateToken, async (req, res) => {
-    const menus = await Menus.findAll({ where: {UserId: req.user.id}});
-    res.json(menus);
+router.get('/', async (req, res) => {
+    const categories = await Categories.findAll()
+                            .then(function (categories) {
+                                console.log(categories);
+                                res.json(categories);
+                            })
+                            .catch(function (err) {
+                                // every error
+                                res.json(err);
+                            });
 });
 
-
+/**
 //GET by menu ID 
 router.get("/:id", validateToken, async (req, res) => {
     const id = req.params.id;
@@ -151,6 +154,7 @@ router.delete("/image-delete/:imagename", (req, res) => {
     }
   });
 
+   */
 
 
 module.exports = router;
