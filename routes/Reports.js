@@ -3,7 +3,6 @@ const router = express.Router();
 const { Reports } = require('../models');
 
 
-
 //by subcategory id
 router.get('/subcategory/:SubcategoryId', async (req, res) => {
     const SubcategoryId = req.params.SubcategoryId;
@@ -31,6 +30,29 @@ router.get('/:id', async (req, res) => {
                                 res.json(err);
                             });
 });
+
+
+//post new report
+router.post("/", async (req, res) => {
+    const {title, report_desc, SubcategoryId} = req.body;
+
+    const menu = await Reports
+                            .create({
+                                title: title,
+                                report_desc: report_desc,
+                                SubcategoryId: SubcategoryId,
+                            })
+                            .then(function (report) {
+                                res.status(200).json({"msg": "SUCCESS", "report_id":report.id } );
+                            })
+                            .catch(function (err) {
+                                res.status(400).json(err);
+                            });
+
+    
+});
+
+
 
 
 module.exports = router;
