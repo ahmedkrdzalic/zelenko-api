@@ -2,22 +2,17 @@ module.exports = (sequelize, DataTypes) => {
 
     const Categories = sequelize.define("Categories", {
 
-        title: {
+        username: {
             type: DataTypes.STRING,
             allowNull: false,
         },
+        password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        }
 
 
     }, {timestamps: false,})
 
-    Categories.associate = (models) => {
-        Categories.hasMany(models.Subcategories, {
-            onDelete: "cascade",
-        });
-        models.Subcategories.belongsTo(Categories);
-    };
-
-
-    
     return Categories;
 }
